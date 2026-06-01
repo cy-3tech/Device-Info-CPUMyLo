@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<!-- SECURITY: Content Security Policy -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.anthropic.com https://api.coingecko.com wss://echo.websocket.org wss://*.websocket.org ws://*.websocket.org; img-src 'self' data: blob:;">
 <title>CPUMyLo — Mylo AI+</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Tektur:wght@400;600;800;900&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
@@ -24,21 +26,15 @@
 
   <!-- ═══ PAGE: CPU ═══ -->
   <div class="page active" id="page-cpu">
-
-    <!-- Real HW Info -->
     <div class="card">
       <div class="card-hdr">◈ HARDWARE INFO <span style="color:var(--muted);font-size:.5rem">REAL DEVICE DATA</span></div>
       <div class="p gap" id="hwInfo"></div>
     </div>
-
-    <!-- Freq canvas -->
     <div class="card amber">
       <div class="card-hdr amber">⚡ CPU FREQUENCY — LIVE <span id="freqLabel" style="color:var(--amber)">-- GHz</span></div>
       <canvas id="freqCv" height="120"></canvas>
       <div class="fbars" id="fbars"></div>
     </div>
-
-    <!-- Metrics -->
     <div class="card">
       <div class="mgrid c3">
         <div class="mcell"><span class="mv" id="mLoad">--%</span><span class="ml">CPU LOAD</span></div>
@@ -47,21 +43,15 @@
         <div class="mcell"><span class="mv li" id="mMem">--%</span><span class="ml">MEMORY</span></div>
         <div class="mcell"><span class="mv" id="mNoise">--</span><span class="ml">NOISE IDX</span></div>
         <div class="mcell"><span class="mv vi" id="mCores">--</span><span class="ml">CPU CORES</span></div>
-      </div>    </div>
-
-    <!-- Core rings -->
+      </div>
+    </div>
     <div class="card lime">
       <div class="card-hdr lime">◎ CORE FREQUENCY MAP</div>
-      <div class="core-rings" id="coreRings"></div>
-    </div>
-
-    <!-- Noise -->
+      <div class="core-rings" id="coreRings"></div>    </div>
     <div class="card rose">
       <div class="card-hdr rose">〰 NOISE WAVEFORM</div>
       <canvas id="noiseCv" height="80"></canvas>
     </div>
-
-    <!-- Performance Observer -->
     <div class="card violet">
       <div class="card-hdr violet">⏱ PERFORMANCE TIMELINE</div>
       <canvas id="perfCv" height="80"></canvas>
@@ -70,13 +60,10 @@
         <div class="mcell"><span class="mv" id="mMem2">-- MB</span><span class="ml">JS HEAP</span></div>
       </div>
     </div>
-
   </div>
 
   <!-- ═══ PAGE: CRYPTO ═══ -->
   <div class="page" id="page-crypto">
-
-    <!-- Algo select -->
     <div class="card">
       <div class="card-hdr amber">⬡ ENCRYPT / DECRYPT</div>
       <div class="p gap">
@@ -96,7 +83,8 @@
           <input type="password" id="cryptPass" placeholder="Secret key or passphrase...">
         </div>
         <div class="btn-row">
-          <button class="btn solid" onclick="doEncrypt()">ENCRYPT</button>          <button class="btn am" onclick="doDecrypt()">DECRYPT</button>
+          <button class="btn solid" onclick="doEncrypt()">ENCRYPT</button>
+          <button class="btn am" onclick="doDecrypt()">DECRYPT</button>
           <button class="btn ro" onclick="()=>{document.getElementById('cryptIn').value='';document.getElementById('cryptOut').textContent='// cleared';}">CLR</button>
         </div>
         <div>
@@ -108,10 +96,7 @@
           <button class="btn sm" onclick="swapIO()">⇅ SWAP</button>
         </div>
       </div>
-    </div>
-
-    <!-- Key Pair -->
-    <div class="card">
+    </div>    <div class="card">
       <div class="card-hdr">⬡ KEY PAIR GENERATOR</div>
       <div class="p gap">
         <div>
@@ -136,8 +121,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Hash Suite -->
     <div class="card lime">
       <div class="card-hdr lime">⬡ HASH SUITE</div>
       <div class="p gap">
@@ -145,7 +128,8 @@
           <label>INPUT</label>
           <textarea id="hashIn" placeholder="Text to hash..." rows="3"></textarea>
         </div>
-        <div>          <label>HMAC KEY (optional)</label>
+        <div>
+          <label>HMAC KEY (optional)</label>
           <input id="hmacKey" placeholder="HMAC secret...">
         </div>
         <div class="btn-row">
@@ -160,11 +144,8 @@
         <div class="hash-rows" id="hashRows"></div>
       </div>
     </div>
-
-    <!-- Format Converter -->
     <div class="card violet">
-      <div class="card-hdr violet">⇄ FORMAT CONVERTER</div>
-      <div class="p gap">
+      <div class="card-hdr violet">⇄ FORMAT CONVERTER</div>      <div class="p gap">
         <div class="row">
           <div style="flex:1"><label>FROM</label><select id="fFrom"><option>Base64</option><option>Hex</option><option>UTF-8</option><option>Binary</option><option>PEM</option></select></div>
           <div style="flex:1"><label>TO</label><select id="fTo"><option>Hex</option><option>Base64</option><option>UTF-8</option><option>Binary</option><option>PEM</option></select></div>
@@ -174,8 +155,6 @@
         <div><label>RESULT</label><div class="outbox" id="fOut">// result</div></div>
       </div>
     </div>
-
-    <!-- Sign & Verify -->
     <div class="card rose">
       <div class="card-hdr rose">◎ SIGN & VERIFY (ECDSA P-256)</div>
       <div class="p gap">
@@ -188,13 +167,11 @@
         <div><label>PASTE SIGNATURE TO VERIFY</label><textarea id="verifySig" rows="2" placeholder="Hex signature..."></textarea></div>
       </div>
     </div>
-
   </div>
 
   <!-- ═══ PAGE: PLAYGROUND ═══ -->
   <div class="page" id="page-play">
-
-    <!-- Live encode/decode -->    <div class="card">
+    <div class="card">
       <div class="card-hdr amber">◎ LIVE ENCODE / DECODE</div>
       <div class="p gap">
         <div class="chips" id="pgChips">
@@ -213,14 +190,11 @@
         <div><label>DECODED BACK</label><div class="outbox" id="pgDec">// decoded</div></div>
       </div>
     </div>
-
-    <!-- Random -->
     <div class="card lime">
       <div class="card-hdr lime">◎ SECURE RANDOM GENERATOR</div>
       <div class="p gap">
         <div class="row">
-          <div style="flex:1"><label>BYTES</label><input type="number" id="rndN" value="32" min="1" max="256"></div>
-          <div style="flex:1"><label>FORMAT</label><select id="rndFmt"><option>Hex</option><option>Base64</option><option>Decimal</option><option>Binary</option></select></div>
+          <div style="flex:1"><label>BYTES</label><input type="number" id="rndN" value="32" min="1" max="256"></div>          <div style="flex:1"><label>FORMAT</label><select id="rndFmt"><option>Hex</option><option>Base64</option><option>Decimal</option><option>Binary</option></select></div>
         </div>
         <button class="btn li" onclick="genRand()">GENERATE</button>
         <div class="outbox" id="rndOut">// cryptographically secure random bytes</div>
@@ -230,8 +204,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Cert inspector -->
     <div class="card violet">
       <div class="card-hdr violet">◎ CERT / KEY INSPECTOR</div>
       <div class="p gap">
@@ -240,14 +212,11 @@
         <div class="outbox" id="certOut" style="font-size:.58rem;">// parsed fields</div>
       </div>
     </div>
-
   </div>
 
-  <!-- ═══ PAGE: DEVICES ═══ -->  <div class="page" id="page-dev">
-
+  <!-- ═══ PAGE: DEVICES ═══ -->
+  <div class="page" id="page-dev">
     <div id="portList"></div>
-
-    <!-- WebSocket -->
     <div class="card">
       <div class="card-hdr">⇄ WEBSOCKET CLIENT</div>
       <div class="p gap">
@@ -258,8 +227,6 @@
         <div class="log" id="wsLog"></div>
       </div>
     </div>
-
-    <!-- HTTP Tester -->
     <div class="card amber">
       <div class="card-hdr amber">⇄ HTTP API TESTER</div>
       <div class="p gap">
@@ -273,13 +240,10 @@
         <div class="outbox" id="httpOut" style="font-size:.58rem;">// response</div>
       </div>
     </div>
-
-    <!-- Serial -->
     <div class="card lime">
       <div class="card-hdr lime">⇄ WEB SERIAL MONITOR</div>
       <div class="p gap">
-        <div class="row">
-          <select id="baud" style="width:110px;flex-shrink:0"><option>9600</option><option>19200</option><option>57600</option><option selected>115200</option><option>230400</option></select>
+        <div class="row">          <select id="baud" style="width:110px;flex-shrink:0"><option>9600</option><option>19200</option><option>57600</option><option selected>115200</option><option>230400</option></select>
           <button class="btn sm li" onclick="serialConn()">CONNECT</button>
           <button class="btn sm ro" onclick="serialDisc()">CLOSE</button>
         </div>
@@ -287,43 +251,33 @@
         <div class="row"><input id="serialSend" placeholder="Send to serial..." style="flex:1"><button class="btn sm" onclick="serialSendData()">SEND</button></div>
       </div>
     </div>
-
-    <!-- Bluetooth -->
     <div class="card rose">
       <div class="card-hdr rose">⇄ WEB BLUETOOTH</div>
       <div class="p gap">
-        <div class="row">          <button class="btn ro" onclick="btScan()">SCAN DEVICES</button>
+        <div class="row">
+          <button class="btn ro" onclick="btScan()">SCAN DEVICES</button>
           <button class="btn sm" onclick="btDisc()">DISCONNECT</button>
           <span id="btStat" style="font-size:.58rem;color:var(--muted)">Not connected</span>
         </div>
         <div class="log" id="btLog"></div>
       </div>
     </div>
-
   </div>
 
   <!-- ═══ PAGE: MINING ═══ -->
   <div class="page" id="page-mine">
-
-    <!-- Real CPU info for mining -->
     <div class="card lime">
       <div class="card-hdr lime">⛏ YOUR MINING CAPABILITY</div>
       <div class="p" id="mineHW"></div>
     </div>
-
-    <!-- Coin List -->
     <div class="card">
       <div class="card-hdr amber">◈ MINEABLE COINS — SELECT TO CONFIGURE <span style="color:var(--muted);font-size:.48rem">REAL NETWORKS</span></div>
       <div class="coin-grid" id="coinGrid"></div>
     </div>
-
-    <!-- Selected coin detail -->
     <div class="card amber" id="coinDetail" style="display:none">
       <div class="card-hdr amber" id="coinDetailHdr">COIN DETAIL</div>
       <div class="p gap" id="coinDetailBody"></div>
     </div>
-
-    <!-- Profitability calculator -->
     <div class="card violet">
       <div class="card-hdr violet">📊 PROFITABILITY CALCULATOR</div>
       <div class="p gap">
@@ -338,13 +292,9 @@
         </table>
       </div>
     </div>
-
-    <!-- Geo Mining -->
-    <div class="card">
-      <div class="card-hdr">📡 GEO / NETWORK MINING</div>      <div class="p gap" id="geoMine"></div>
+    <div class="card">      <div class="card-hdr">📡 GEO / NETWORK MINING</div>
+      <div class="p gap" id="geoMine"></div>
     </div>
-
-    <!-- Notice -->
     <div class="card rose">
       <div class="card-hdr rose">⚠ IMPORTANT — READ</div>
       <div class="p" style="font-size:.62rem;line-height:1.7;color:var(--text);">
@@ -356,12 +306,10 @@
         <span style="color:var(--muted)">Running a cryptominer in a browser tab is classified as malware and will be blocked by browsers and antivirus software. Use dedicated native apps only.</span>
       </div>
     </div>
-
   </div>
 
   <!-- ═══ PAGE: AI ═══ -->
   <div class="page" id="page-ai">
-
     <div class="card violet">
       <div class="card-hdr violet">◉ MYLO AI+ — NEURAL INTERFACE</div>
       <div class="chat-wrap">
@@ -372,8 +320,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Neural Terminal -->
     <div class="card mt">
       <div class="card-hdr">◉ NEURAL TERMINAL</div>
       <div class="term" id="termOut"></div>
@@ -382,24 +328,20 @@
         <input id="termIn" placeholder="command or natural language...">
       </div>
     </div>
-
-    <!-- Live telemetry -->
     <div class="card lime mt">
       <div class="card-hdr lime">◉ LIVE TELEMETRY</div>
       <div class="p" id="telPanel" style="font-size:.63rem;line-height:2;"></div>
     </div>
-
   </div>
+
 </div><!-- /content -->
 
-<!-- Bottom Nav -->
 <nav class="bnav">
   <div class="bitem active" onclick="showPage('cpu',this)"><div class="bi">🖥</div><div class="bl">CPU</div></div>
   <div class="bitem" onclick="showPage('crypto',this)"><div class="bi">🔐</div><div class="bl">CRYPTO</div></div>
   <div class="bitem" onclick="showPage('play',this)"><div class="bi">🎮</div><div class="bl">PLAY</div></div>
   <div class="bitem" onclick="showPage('dev',this)"><div class="bi">📡</div><div class="bl">PORTS</div></div>
-  <div class="bitem" onclick="showPage('mine',this)"><div class="bi">⛏</div><div class="bl">MINE</div></div>
-  <div class="bitem" onclick="showPage('ai',this)"><div class="bi">🤖</div><div class="bl">MYLO AI</div></div>
+  <div class="bitem" onclick="showPage('mine',this)"><div class="bi">⛏</div><div class="bl">MINE</div></div>  <div class="bitem" onclick="showPage('ai',this)"><div class="bi">🤖</div><div class="bl">MYLO AI</div></div>
 </nav>
 
 <script src="script.js"></script>
