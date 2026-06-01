@@ -1,4 +1,13 @@
 // ══════════════════════════════════════════════════════════════
+// SECURITY HELPER
+// ══════════════════════════════════════════════════════════════
+function safeText(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ══════════════════════════════════════════════════════════════
 // NAVIGATION
 // ══════════════════════════════════════════════════════════════
 function showPage(id, el) {
@@ -38,7 +47,6 @@ S.coreFreqs = Array.from({length: S.cores}, () => 2.0 + Math.random() * 1.5);
 function detectHardware() {
   const el = document.getElementById('hwInfo');
   if (!el) return;
-
   // WebGL GPU info
   let gpu = 'Unknown GPU';
   try {
@@ -47,7 +55,8 @@ function detectHardware() {
     if (gl) {
       const ext = gl.getExtension('WEBGL_debug_renderer_info');
       if (ext) {
-        gpu = gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) || 'Unknown';      }
+        gpu = gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) || 'Unknown';
+      }
     }
   } catch(e) {}
 
@@ -87,8 +96,7 @@ function detectHardware() {
       <div class="hw-row"><span class="hw-lbl">CPU THREADS</span><span class="hw-val" style="color:var(--lime)">${S.cores} threads available</span></div>
       <div class="hw-row"><span class="hw-lbl">GPU</span><span class="hw-val" style="color:var(--lime)">${gpu.slice(0,45)}</span></div>
       <div class="hw-row"><span class="hw-lbl">DEVICE TYPE</span><span class="hw-val">${isMobile ? '📱 Mobile (low mining efficiency)' : '🖥 Desktop (better efficiency)'}</span></div>
-      <div class="hw-row"><span class="hw-lbl">ESTIMATED CPU CLASS</span><span class="hw-val" style="color:var(--amber)">${S.cores <= 4 ? 'Entry-Level' : S.cores <= 8 ? 'Mid-Range' : S.cores <= 16 ? 'High-End' : 'Enthusiast'}</span></div>
-      <div class="pbar-wrap"><div class="pbar-track"><div class="pbar-fill" style="width:${Math.min(100,S.cores*6)}%;background:linear-gradient(90deg,var(--lime),var(--neon))"></div></div></div>
+      <div class="hw-row"><span class="hw-lbl">ESTIMATED CPU CLASS</span><span class="hw-val" style="color:var(--amber)">${S.cores <= 4 ? 'Entry-Level' : S.cores <= 8 ? 'Mid-Range' : S.cores <= 16 ? 'High-End' : 'Enthusiast'}</span></div>      <div class="pbar-wrap"><div class="pbar-track"><div class="pbar-fill" style="width:${Math.min(100,S.cores*6)}%;background:linear-gradient(90deg,var(--lime),var(--neon))"></div></div></div>
     `;
   }
 }
@@ -96,7 +104,8 @@ function detectHardware() {
 // ══════════════════════════════════════════════════════════════
 // CLOCK + FPS TRACKING
 // ══════════════════════════════════════════════════════════════
-function updateClock() {  const el = document.getElementById('clock');
+function updateClock() {
+  const el = document.getElementById('clock');
   if (el) el.textContent = new Date().toLocaleTimeString();
 }
 
@@ -136,8 +145,7 @@ function simCPU() {
   if (S.freqHist.length > 80) S.freqHist.shift();
   S.noiseHist.push(S.noise);
   if (S.noiseHist.length > 120) S.noiseHist.shift();
-  const frameTime = 1000 / (S.fps || 60);
-  S.perfHist.push(frameTime);
+  const frameTime = 1000 / (S.fps || 60);  S.perfHist.push(frameTime);
   if (S.perfHist.length > 60) S.perfHist.shift();
 
   updateMetrics();
@@ -145,7 +153,8 @@ function simCPU() {
   updateTelemetry();
 }
 
-function updateMetrics() {  const set = (id, txt, cls) => {
+function updateMetrics() {
+  const set = (id, txt, cls) => {
     const el = document.getElementById(id);
     if (!el) return;
     el.textContent = txt;
@@ -185,8 +194,7 @@ function renderCoreRings() {
               stroke-dashoffset="0"/>
           </svg>
           <div class="ring-val" style="color:${colors[i]}">${freq.toFixed(1)}G</div>
-        </div>
-        <div class="ring-lbl">C${i}</div>
+        </div>        <div class="ring-lbl">C${i}</div>
       </div>
     `;
   }).join('');
@@ -194,7 +202,8 @@ function renderCoreRings() {
 
 function updateTelemetry() {
   const el = document.getElementById('telPanel');
-  if (!el) return;  el.innerHTML = [
+  if (!el) return;
+  el.innerHTML = [
     ['CPU LOAD', S.cpu.toFixed(2) + '%', S.cpu > 85 ? 'var(--rose)' : S.cpu > 65 ? 'var(--amber)' : 'var(--neon)'],
     ['FREQUENCY', S.freq.toFixed(3) + ' GHz', 'var(--amber)'],
     ['FREQ MAX', S.freqMax.toFixed(3) + ' GHz', 'var(--amber)'],
@@ -235,7 +244,6 @@ function renderFreqCanvas() {
   ctx.beginPath(); ctx.lineWidth=2; ctx.strokeStyle='#ffb800';
   buf.forEach((v,i) => { const x=(i/N)*W, y=120-(v/5.5)*105; i===0?ctx.moveTo(x,y):ctx.lineTo(x,y); });
   ctx.stroke();
-
   const last = buf[buf.length-1], cx=W-3, cy=120-(last/5.5)*105;
   ctx.beginPath(); ctx.arc(cx,cy,5,0,Math.PI*2);
   ctx.fillStyle='#ffb800'; ctx.shadowColor='#ffb800'; ctx.shadowBlur=14; ctx.fill(); ctx.shadowBlur=0;
@@ -243,7 +251,8 @@ function renderFreqCanvas() {
 
 function renderFreqBars() {
   const el = document.getElementById('fbars');
-  if (!el) return;  const N = 24;
+  if (!el) return;
+  const N = 24;
   if (!el.children.length) {
     for (let i=0; i<N; i++) { const b=document.createElement('div'); b.className='fbar'; el.appendChild(b); }
   }
@@ -283,8 +292,7 @@ function renderNoise() {
 function renderPerf() {
   const cv = document.getElementById('perfCv');
   if (!cv) return;
-  const W = cv.parentElement.clientWidth;
-  cv.width = W; cv.height = 80;
+  const W = cv.parentElement.clientWidth;  cv.width = W; cv.height = 80;
   const ctx = cv.getContext('2d'), buf = S.perfHist, N = buf.length;
   ctx.fillStyle='#030508'; ctx.fillRect(0,0,W,80);
   [16,33,50].forEach(ms => {
@@ -292,7 +300,8 @@ function renderPerf() {
     ctx.strokeStyle='rgba(28,45,80,.4)'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
     ctx.fillStyle='rgba(74,106,138,.5)'; ctx.font='8px Space Mono';
-    ctx.fillText(ms+'ms',3,y-2);  });
+    ctx.fillText(ms+'ms',3,y-2);
+  });
   const fill=ctx.createLinearGradient(0,0,0,80);
   fill.addColorStop(0,'rgba(155,92,255,.3)'); fill.addColorStop(1,'rgba(155,92,255,.01)');
   ctx.beginPath();
@@ -332,8 +341,7 @@ async function doEncrypt() {
       const iv = crypto.getRandomValues(new Uint8Array(12));
       const key = await getAESKey(pass, salt);
       const enc = await crypto.subtle.encrypt({name:'AES-GCM',iv}, key, new TextEncoder().encode(plain));
-      const combined = new Uint8Array(salt.length + iv.length + enc.byteLength);
-      combined.set(salt); combined.set(iv,16); combined.set(new Uint8Array(enc),28);
+      const combined = new Uint8Array(salt.length + iv.length + enc.byteLength);      combined.set(salt); combined.set(iv,16); combined.set(new Uint8Array(enc),28);
       out.textContent = 'AES-GCM:' + btoa(String.fromCharCode(...combined));
     }
   } catch(e) { out.textContent = '// ERROR: ' + e.message; }
@@ -341,7 +349,8 @@ async function doEncrypt() {
 
 async function doDecrypt() {
   const cipher = document.getElementById('cryptIn').value.trim();
-  const pass = document.getElementById('cryptPass').value || 'mylo-default';  const out = document.getElementById('cryptOut');
+  const pass = document.getElementById('cryptPass').value || 'mylo-default';
+  const out = document.getElementById('cryptOut');
   try {
     if (cipher.startsWith('RSA-OAEP:')) {
       if (!S.cryptoKeyPair) { out.textContent='// no private key'; return; }
@@ -381,8 +390,7 @@ async function genKeyPair() {
       priv.textContent = 'Ed25519 Private (sim):\n' + Array.from(pv).map(x=>x.toString(16).padStart(2,'0')).join('');
       return;
     }
-    S.cryptoKeyPair = kp;
-    const pubR = await crypto.subtle.exportKey(algo.startsWith('RSA')?'spki':'raw', kp.publicKey);
+    S.cryptoKeyPair = kp;    const pubR = await crypto.subtle.exportKey(algo.startsWith('RSA')?'spki':'raw', kp.publicKey);
     const privR = await crypto.subtle.exportKey(algo.startsWith('RSA')?'pkcs8':'raw', kp.privateKey);
     pub.textContent = algo + ' Public:\n' + btoa(String.fromCharCode(...new Uint8Array(pubR)));
     priv.textContent = algo + ' Private:\n' + btoa(String.fromCharCode(...new Uint8Array(privR)));
@@ -390,7 +398,8 @@ async function genKeyPair() {
 }
 
 async function exportPEM() {
-  if (!S.cryptoKeyPair) { alert('Generate key pair first'); return; }  try {
+  if (!S.cryptoKeyPair) { alert('Generate key pair first'); return; }
+  try {
     const raw = await crypto.subtle.exportKey('spki', S.cryptoKeyPair.publicKey);
     const b64 = btoa(String.fromCharCode(...new Uint8Array(raw)));
     document.getElementById('pubKey').textContent = '-----BEGIN PUBLIC KEY-----\n' + b64.match(/.{1,64}/g).join('\n') + '\n-----END PUBLIC KEY-----';
@@ -430,8 +439,7 @@ async function hashFile(inp) {
   const file = inp.files[0]; if (!file) return;
   const out = document.getElementById('fileHashOut');
   out.textContent = '// hashing ' + file.name + '...';
-  const buf = await file.arrayBuffer();
-  const results = await Promise.all(['SHA-256','SHA-512'].map(async a => {
+  const buf = await file.arrayBuffer();  const results = await Promise.all(['SHA-256','SHA-512'].map(async a => {
     const h = await crypto.subtle.digest(a, buf);
     return a + ': ' + Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');
   }));
@@ -439,7 +447,8 @@ async function hashFile(inp) {
 }
 
 function convertFmt() {
-  const input=document.getElementById('fIn').value.trim();  const from=document.getElementById('fFrom').value, to=document.getElementById('fTo').value;
+  const input=document.getElementById('fIn').value.trim();
+  const from=document.getElementById('fFrom').value, to=document.getElementById('fTo').value;
   const out=document.getElementById('fOut');
   try {
     let bytes;
@@ -479,7 +488,6 @@ async function doVerify() {
     out.style.color = valid ? 'var(--lime)' : 'var(--rose)';
   } catch(e) { out.textContent='// '+e.message; }
 }
-
 // PLAYGROUND
 let pgMode = 'b64';
 function pgSel(el, mode) {
@@ -488,7 +496,8 @@ function pgSel(el, mode) {
   document.getElementById('xorKeyRow').style.display=mode==='xor'?'block':'none';
   pgLive();
 }
-function pgLive() {  const input=document.getElementById('pgIn').value;
+function pgLive() {
+  const input=document.getElementById('pgIn').value;
   const enc=document.getElementById('pgEnc'), dec=document.getElementById('pgDec');
   try {
     let encoded='', decoded='';
@@ -528,8 +537,7 @@ function inspectCert(){
 function initPorts() {
   const ports = [
     {icon:'🔌',name:'Web Serial',desc:'Arduino, MCU, UART devices',type:'serial'},
-    {icon:'📶',name:'Web Bluetooth BLE',desc:'Wearables, sensors, IoT',type:'bt'},
-    {icon:'🌐',name:'WebSocket',desc:'Real-time TCP connection',type:'ws'},
+    {icon:'📶',name:'Web Bluetooth BLE',desc:'Wearables, sensors, IoT',type:'bt'},    {icon:'🌐',name:'WebSocket',desc:'Real-time TCP connection',type:'ws'},
     {icon:'🔗',name:'HTTP / REST',desc:'API endpoint testing',type:'http'},
     {icon:'💾',name:'WebUSB',desc:'Direct USB device access',type:'usb'},
     {icon:'📡',name:'WebRTC',desc:'P2P data channel',type:'rtc'},
@@ -537,7 +545,8 @@ function initPorts() {
   document.getElementById('portList').innerHTML = ports.map(p => `
     <div class="port-item" id="port-${p.type}">
       <div class="port-icon">${p.icon}</div>
-      <div class="port-info">        <div class="port-name">${p.name}</div>
+      <div class="port-info">
+        <div class="port-name">${p.name}</div>
         <div class="port-desc">${p.desc}</div>
         <div class="port-stat" id="port-stat-${p.type}"></div>
       </div>
@@ -559,7 +568,7 @@ function connectPort(t){if(t==='serial')serialConn();else if(t==='bt')btScan();e
 
 // WebSocket
 let wsConn=null;
-function wsLog(msg,cls='info'){const l=document.getElementById('wsLog');if(!l)return;const d=document.createElement('div');d.className='log-ln';d.innerHTML=`<span class="ts">${new Date().toLocaleTimeString()} </span><span class="${cls}">${msg}</span>`;l.appendChild(d);l.scrollTop=l.scrollHeight;}
+function wsLog(msg,cls='info'){const l=document.getElementById('wsLog');if(!l)return;const d=document.createElement('div');d.className='log-ln';d.innerHTML=`<span class="ts">${new Date().toLocaleTimeString()} </span><span class="${cls}">${safeText(msg)}</span>`;l.appendChild(d);l.scrollTop=l.scrollHeight;}
 function wsConnect(){const url=document.getElementById('wsUrl').value;if(wsConn)wsConn.close();wsLog('Connecting to '+url+'...','warn');try{wsConn=new WebSocket(url);wsConn.onopen=()=>{wsLog('Connected ✓','ok');setPortStatus('ws','conn','WS: '+url);};wsConn.onmessage=e=>wsLog('← '+e.data,'data');wsConn.onerror=()=>{wsLog('Error','err');setPortStatus('ws','off','');};wsConn.onclose=()=>{wsLog('Closed','warn');setPortStatus('ws','off','');};}catch(e){wsLog('Error: '+e.message,'err');}}
 function wsDisc(){if(wsConn)wsConn.close();wsConn=null;}
 function wsSend(){const m=document.getElementById('wsMsg').value;if(!wsConn||wsConn.readyState!==1){wsLog('Not connected','err');return;}wsConn.send(m);wsLog('→ '+m,'ok');}
@@ -578,18 +587,18 @@ async function httpSend(){
     out.textContent=`STATUS: ${r.status} ${r.statusText}  [${ms}ms]\n\n${pretty.slice(0,1500)}`;
   }catch(e){out.textContent='// ERROR: '+e.message+'\n// (CORS may block cross-origin requests)';}
 }
-
 // Serial
 let serialPort=null,serialReader=null;
-function serialLog(msg,cls='info'){const l=document.getElementById('serialLog');if(!l)return;const d=document.createElement('div');d.className='log-ln';d.innerHTML=`<span class="ts">${new Date().toLocaleTimeString()} </span><span class="${cls}">${msg}</span>`;l.appendChild(d);l.scrollTop=l.scrollHeight;}
+function serialLog(msg,cls='info'){const l=document.getElementById('serialLog');if(!l)return;const d=document.createElement('div');d.className='log-ln';d.innerHTML=`<span class="ts">${new Date().toLocaleTimeString()} </span><span class="${cls}">${safeText(msg)}</span>`;l.appendChild(d);l.scrollTop=l.scrollHeight;}
 async function serialConn(){
   if(!('serial' in navigator)){serialLog('Web Serial: use Chrome/Edge desktop','err');return;}
   try{serialPort=await navigator.serial.requestPort();const b=parseInt(document.getElementById('baud').value);await serialPort.open({baudRate:b});serialLog('Port open @ '+b+' baud','ok');setPortStatus('serial','conn','Baud:'+b);const dec=new TextDecoderStream();serialPort.readable.pipeTo(dec.writable);serialReader=dec.readable.getReader();(async()=>{while(true){try{const{value,done}=await serialReader.read();if(done)break;serialLog('← '+value,'data');}catch{break;}}})();}catch(e){serialLog('Error: '+e.message,'err');}
 }
-async function serialDisc(){if(serialReader)await serialReader.cancel();if(serialPort)await serialPort.close();serialPort=serialReader=null;serialLog('Closed','warn');setPortStatus('serial','off','');}async function serialSendData(){const msg=document.getElementById('serialSend').value;if(!serialPort?.writable){serialLog('Not connected','err');return;}const w=serialPort.writable.getWriter();await w.write(new TextEncoder().encode(msg+'\n'));w.releaseLock();serialLog('→ '+msg,'ok');}
+async function serialDisc(){if(serialReader)await serialReader.cancel();if(serialPort)await serialPort.close();serialPort=serialReader=null;serialLog('Closed','warn');setPortStatus('serial','off','');}
+async function serialSendData(){const msg=document.getElementById('serialSend').value;if(!serialPort?.writable){serialLog('Not connected','err');return;}const w=serialPort.writable.getWriter();await w.write(new TextEncoder().encode(msg+'\n'));w.releaseLock();serialLog('→ '+msg,'ok');}
 
 // Bluetooth
-function btLog(msg,cls='info'){const l=document.getElementById('btLog');if(!l)return;const d=document.createElement('div');d.className='log-ln';d.innerHTML=`<span class="ts">${new Date().toLocaleTimeString()} </span><span class="${cls}">${msg}</span>`;l.appendChild(d);l.scrollTop=l.scrollHeight;}
+function btLog(msg,cls='info'){const l=document.getElementById('btLog');if(!l)return;const d=document.createElement('div');d.className='log-ln';d.innerHTML=`<span class="ts">${new Date().toLocaleTimeString()} </span><span class="${cls}">${safeText(msg)}</span>`;l.appendChild(d);l.scrollTop=l.scrollHeight;}
 async function btScan(){
   if(!('bluetooth' in navigator)){btLog('Web Bluetooth: use Chrome/Edge','err');return;}
   document.getElementById('btStat').textContent='Scanning...';
@@ -626,17 +635,6 @@ const COINS = [
   {sym:'HNT',name:'Helium IOT',algo:'Proof-of-Coverage',type:'GEO',color:'#74b9ff',difficulty:'N/A',pool:'Helium Network',software:'Hotspot Firmware',link:'https://www.helium.com',mobileOk:false,gpuOk:false,desc:'Earn HNT by running a LoRaWAN hotspot. Real hardware required.'},
   {sym:'HONEY',name:'Hivemapper',algo:'Geo/Dashcam',type:'GEO',color:'#ffeaa7',difficulty:'N/A',pool:'Hivemapper Network',software:'Hivemapper App',link:'https://hivemapper.com',mobileOk:true,gpuOk:false,desc:'Map the world with a dashcam. Earn HONEY tokens per km mapped.'},
 ];
-
-// Approximate difficulty multipliers for profit calc
-const ALGO_HASHRATES = {
-  'RandomX': {h:500, unit:'H/s'},
-  'GhostRider': {h:300, unit:'H/s'},
-  'AstroBWT': {h:1200, unit:'H/s'},
-  'ZelHash': {h:50000, unit:'H/s'},
-  'kHeavyHash': {h:500000000, unit:'H/s'},
-  'Blake3': {h:200000000, unit:'H/s'},
-  'CryptoNight-GPU': {h:1500, unit:'H/s'},};
-
 function initCoinGrid() {
   const g = document.getElementById('coinGrid');
   g.innerHTML = COINS.map((c, i) => `
@@ -684,9 +682,9 @@ function selectCoin(idx) {
   document.querySelectorAll('.coin-card').forEach(c=>c.classList.remove('sel'));
   document.getElementById('ccard-'+idx).classList.add('sel');
   const c = COINS[idx];
-  S.selectedCoin = c;  const detail = document.getElementById('coinDetail');
-  const hdr = document.getElementById('coinDetailHdr');
-  const body = document.getElementById('coinDetailBody');
+  S.selectedCoin = c;
+  const detail = document.getElementById('coinDetail');
+  const hdr = document.getElementById('coinDetailHdr');  const body = document.getElementById('coinDetailBody');
   detail.style.display = 'block';
   hdr.textContent = c.sym + ' — ' + c.name;
   const price = S.coinPrices[c.sym] ? '$'+S.coinPrices[c.sym] : 'See network';
@@ -713,7 +711,6 @@ function calcProfit() {
   if (!body) return;
   const rows = COINS.filter(c => c.type !== 'GEO' && S.coinPrices[c.sym]).map(c => {
     const price = S.coinPrices[c.sym] || 0;
-    // Rough estimate: revenue proportional to hashrate/network difficulty placeholder
     const diffMult = c.difficulty==='Low'?0.005:c.difficulty==='Medium'?0.002:c.difficulty==='High'?0.0005:0.00001;
     const coinsPerDay = hashrate * diffMult;
     const revPerDay = coinsPerDay * price;
@@ -733,10 +730,10 @@ function calcProfit() {
 function initGeoMine() {
   const geoCoins = COINS.filter(c => c.type === 'GEO');
   const el = document.getElementById('geoMine');
-  if (!el) return;  el.innerHTML = geoCoins.map(c => `
+  if (!el) return;
+  el.innerHTML = geoCoins.map(c => `
     <div class="port-item" style="margin-bottom:0">
-      <div style="font-size:1.4rem">${c.sym==='MOBILE'?'📱':c.sym==='DIMO'?'🚗':c.sym==='HNT'?'📡':'🎥'}</div>
-      <div class="port-info">
+      <div style="font-size:1.4rem">${c.sym==='MOBILE'?'📱':c.sym==='DIMO'?'🚗':c.sym==='HNT'?'📡':'🎥'}</div>      <div class="port-info">
         <div class="port-name" style="color:${c.color}">${c.sym} — ${c.name}</div>
         <div class="port-desc">${c.desc}</div>
         <a href="${c.link}" target="_blank" rel="noopener" style="color:var(--neon);font-size:.55rem;text-decoration:none;">→ ${c.link}</a>
@@ -752,7 +749,7 @@ function addAI(role, text) {
   const el = document.getElementById('aiChat'); if (!el) return;
   const d = document.createElement('div');
   if (role === 'user') { d.className='cmsg cmsg-u'; d.textContent=text; }
-  else if (role === 'ai') { d.className='cmsg cmsg-a'; d.innerHTML=`<span class="albl">◉ MYLO AI+</span>${text}`; }
+  else if (role === 'ai') { d.className='cmsg cmsg-a'; d.innerHTML=`<span class="albl">◉ MYLO AI+</span>${safeText(text)}`; }
   else { d.className='cmsg cmsg-s'; d.textContent='⚡ '+text; }
   el.appendChild(d); el.scrollTop=el.scrollHeight;
 }
@@ -781,8 +778,13 @@ function termLog(cmd, out, cls='ok') {
   const el = document.getElementById('termOut'); if (!el) return;
   const d = document.createElement('div');
   d.style.cssText='font-size:.62rem;margin-bottom:2px;';
-  d.innerHTML=`<span style="color:var(--rose)">MYLO:/> </span><span style="color:var(--neon)">${cmd}</span>`;
-  el.appendChild(d);  if (out) { const o=document.createElement('div');o.style.cssText='font-size:.6rem;color:'+(cls==='ok'?'#39ff8a':cls==='err'?'var(--rose)':'var(--muted)');o.textContent='  └ '+out;el.appendChild(o); }
+  d.innerHTML=`<span style="color:var(--rose)">MYLO:/> </span><span style="color:var(--neon)">${safeText(cmd)}</span>`;
+  el.appendChild(d);
+  if (out) { 
+    const o=document.createElement('div');
+    o.style.cssText='font-size:.6rem;color:'+(cls==='ok'?'#39ff8a':cls==='err'?'var(--rose)':'var(--muted)');    o.textContent='  └ '+out; 
+    el.appendChild(o); 
+  }
   el.scrollTop=el.scrollHeight;
 }
 
@@ -829,13 +831,12 @@ function loop(now){
 }
 
 // ══════════════════════════════════════════════════════════════
-// BOOT
-// ══════════════════════════════════════════════════════════════
-detectHardware();initPorts();
+// BOOT// ══════════════════════════════════════════════════════════════
+detectHardware();
+initPorts();
 initCoinGrid();
 initGeoMine();
 addAI('system', 'CPUMyLo Scanner online — Mylo AI+ ready');
 addAI('ai', 'All systems nominal. Your real device data is loaded. I can see live CPU metrics, help with cryptography, connect to device ports, or pull up mining data for any supported coin. What do you need?');
 termLog('init cpumylo --mobile','Mylo AI+ loaded. Real HW detection complete. Crypto engine: WebCrypto API. Device APIs: Serial, BLE, USB, WS.','ok');
 requestAnimationFrame(loop);
-
